@@ -55,7 +55,7 @@
               type="search"
               id="searchTitre"
               class="form-control"
-              placeholder="Recherche de favoris"
+              placeholder="Recherche de nouvelle"
             />
             <span> <!-- skip a column --> </span>
             <span class="cmd fa fa-refresh"></span>
@@ -163,13 +163,12 @@
 //     }
 // }); 
       let limit=4;
-      let offset=0;
       let scrollBotReleased = true;
       let lastScrollValue = 0;
 
        function getNouvellesList() {
         function prepareQueryString() {
-          let queryString = "?";
+          let queryString = "?sort=Date,desc";
         
           if (!hideSearchBar) {
             selectedCategory = $("#searchCategorie").val();
@@ -182,19 +181,16 @@
           } 
           $(".scrollContainer").scroll(function () {
          
-         if ($(".scrollContainer").scrollTop() + $(".scrollContainer").innerHeight() > $("#nouvellesList").height() && limit<=limit+4 && scrollBotReleased == true) {
+         if ($(".scrollContainer").innerHeight()+ $(".scrollContainer").scrollTop()  > $("#nouvellesList").height() && scrollBotReleased) {
           scrollBotReleased = false;
-          console.log($(".scrollContainer").scrollTop());
-          console.log($(".scrollContainer").innerHeight());
-          console.log($("#nouvellesList").height());
           limit+=1 ;
           getNouvellesList();
          }
-         if($(".scrollContainer").scrollTop() < $("#nouvellesList").height() - $(".scrollContainer").innerHeight() && scrollBotReleased == false){
+         if($(".scrollContainer").scrollTop() < $("#nouvellesList").height() - $(".scrollContainer").innerHeight() && !scrollBotReleased){
           scrollBotReleased = true;
          }
      });
-     queryString += "&limit="+limit + "&offset="+offset ;
+     queryString += "&limit="+limit ;
           return queryString;
         }
         GET_ALL(refreshNouvellesList, error, prepareQueryString());
@@ -247,9 +243,7 @@
         $("#nouvellesList").empty();
         let currentCategory = "";
         for (let nouvelle of nouvelles) {
-        //   if (nouvelle.Categorie !== currentCategory)
-        //     currentCategory = nouvelle.Categorie;
-        //   else nouvelle.Categorie = "";
+
           insertIntoNouvelleList(nouvelle);
         }
         $(".scrollContainer").scrollTop(previousScrollPosition);
